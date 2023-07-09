@@ -8,7 +8,8 @@
   </head>
   <body>
     <div class="mainVideo">
-      <video id="webcamVideo" autoplay playsinline></video>
+      <video id="remoteVideo" autoplay playsinline></video>
+
       <div id="videoButtons">
         <button id="webcamButton">Begin Video Call</button>
         <button id="callButton" disabled>Create Call</button>
@@ -17,7 +18,7 @@
       </div>
     </div>
     <div id="sideVideoContainer">
-      <video id="remoteVideo" autoplay playsinline></video>
+      <video id="webcamVideo" autoplay playsinline muted></video>
       <button id="hangupButton" disabled>Hangup</button>
     </div>
 
