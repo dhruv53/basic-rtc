@@ -10,7 +10,7 @@ const firebaseConfig = {
   storageBucket: "web-rtc-b8b53.appspot.com",
   messagingSenderId: "998836877064",
   appId: "1:998836877064:web:de66e4bea2d4c870fa5ebd",
-  measurementId: "G-Z4QXKFS24Z"
+  measurementId: "G-Z4QXKFS24Z"
 };
 
 if (!firebase.apps.length) {
@@ -31,6 +31,7 @@ const servers = {
 const pc = new RTCPeerConnection(servers);
 let localStream = null;
 let remoteStream = null;
+let callDocId = null; // Store the ID of the call document
 
 // HTML elements
 const webcamButton = document.getElementById('webcamButton');
@@ -75,6 +76,7 @@ callButton.onclick = async () => {
   const answerCandidates = callDoc.collection('answerCandidates');
 
   callInput.value = callDoc.id;
+  callDocId = callDoc.id; // Store the ID of the call document
 
   // Get candidates for caller, save to db
   pc.onicecandidate = (event) => {
@@ -149,4 +151,42 @@ answerButton.onclick = async () => {
       }
     });
   });
+};
+
+// Hang up the call
+hangupButton.onclick = async () => {
+  // Close the peer connection
+  pc.close();
+
+  // Reset local and remote streams
+  localStream = null;
+  remoteStream = null;
+  webcamVideo.srcObject = null;
+  remoteVideo.srcObject = null;
+
+  // Disable buttons
+  hangupButton.disabled = true;
+  callButton.disabled = true;
+  answerButton.disabled = true;
+  webcamButton.disabled = false;
+
+  // Delete the call document from Firestore
+  if (callDocId) {
+    const callDoc = firestore.collection('calls').doc(callDocId);
+    const offerCandidates = callDoc.collection('offerCandidates');
+    const answerCandidates = callDoc.collection('answerCandidates');
+
+    // Delete offer candidates
+    const offerCandidatesSnapshot = await offerCandidates.get();
+    offerCandidatesSnapshot.forEach((doc) => doc.ref.delete());
+
+    // Delete answer candidates
+    const answerCandidatesSnapshot = await answerCandidates.get();
+    answerCandidatesSnapshot.forEach((doc) => doc.ref.delete());
+
+    // Delete the call document
+    callDoc.delete();
+
+    callDocId = null; // Reset the call document ID
+  }
 };
