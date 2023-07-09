@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>WebRTC Demo</title>
+  </head>
+  <body>
+    <div class="mainVideo">
+      <video id="webcamVideo" autoplay playsinline></video>
+      <div id="videoButtons">
+        <button id="webcamButton">Begin Video Call</button>
+        <button id="callButton" disabled>Create Call</button>
+        <input id="callInput" />
+        <button id="answerButton" disabled>Answer</button>
+      </div>
+    </div>
+    <div id="sideVideoContainer">
+      <video id="remoteVideo" autoplay playsinline></video>
+      <button id="hangupButton" disabled>Hangup</button>
+    </div>
+
+    <script type="module" src="/main.js"></script>
+  </body>
+</html>
